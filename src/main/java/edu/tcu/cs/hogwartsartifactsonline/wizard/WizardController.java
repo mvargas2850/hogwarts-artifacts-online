@@ -77,4 +77,11 @@ public class WizardController {
 
     //assignArtifact
 
+    //changing the ownership of an artifact
+    @PutMapping("/{wizardId}/artifacts/{artifactId}")
+    public Result assignArtifact(@PathVariable Integer wizardId, @PathVariable String artifactId) {
+        this.wizardService.assignArtifact(wizardId, artifactId);
+        return new Result(true, StatusCode.SUCCESS, "Artifact Assignment Success");
+    }
+
 }

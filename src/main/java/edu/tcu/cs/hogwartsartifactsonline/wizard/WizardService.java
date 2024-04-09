@@ -1,5 +1,7 @@
 package edu.tcu.cs.hogwartsartifactsonline.wizard;
 
+import edu.tcu.cs.hogwartsartifactsonline.artifact.Artifact;
+import edu.tcu.cs.hogwartsartifactsonline.artifact.ArtifactRepository;
 import edu.tcu.cs.hogwartsartifactsonline.system.exception.ObjectNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -16,8 +18,11 @@ public class WizardService {
 
     private final WizardRepository wizardRepository;
 
-    public WizardService(WizardRepository wizardRepository) {
+    private final ArtifactRepository artifactRepository;
+
+    public WizardService(WizardRepository wizardRepository, ArtifactRepository artifactRepository) {
         this.wizardRepository = wizardRepository;
+        this.artifactRepository = artifactRepository;
     }
 
     //findAll
@@ -60,5 +65,20 @@ public class WizardService {
     }
 
     //assignArtifact
+
+    public void assignArtifact(Integer wizardId, String artifactId) {
+        //find this artifact by Id from the DB
+        Artifact artfactToBeAssigned = this.artifactRepository.findById(artifactId)
+                .orElseThrow(() -> new ObjectNotFoundException("artifact", artifactId));
+        //find wizard by Id from the DB
+        Wizard wizard = this.wizardRepository.findById(wizardId)
+                .orElseThrow(() -> new ObjectNotFoundException("wizard", wizardId));
+        //artifact assignment
+        //check if artifact is already assigned to another wizard
+        if(artfactToBeAssigned.getOwner() != null) {
+            artfactToBeAssigned.getOwner().removeArtifact(artfactToBeAssigned);
+        }
+        wizard.addArtifact(artfactToBeAssigned);
+    }
 
 }
