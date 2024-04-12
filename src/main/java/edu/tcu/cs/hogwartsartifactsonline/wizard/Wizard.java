@@ -56,7 +56,6 @@ public class Wizard implements Serializable {
     public Integer getNumberOfArtifacts() {
         return this.artifacts.size();
     }
-
     //streams thru artifacts, sets each artifact's owner null to detach them
     //then creates new list and assigns the artifact here -> removes them from list
     //common way to clear a collection

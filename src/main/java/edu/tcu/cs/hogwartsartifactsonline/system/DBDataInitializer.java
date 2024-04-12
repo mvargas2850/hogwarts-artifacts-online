@@ -17,7 +17,7 @@ public class DBDataInitializer implements CommandLineRunner {
 
     private final WizardRepository wizardRepository;
 
-    private UserService userService;
+    private final UserService userService;
 
     public DBDataInitializer(ArtifactRepository artifactRepository, WizardRepository wizardRepository, UserService userService) {
         this.artifactRepository = artifactRepository;
