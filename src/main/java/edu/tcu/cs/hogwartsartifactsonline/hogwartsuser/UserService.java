@@ -19,6 +19,7 @@ public class UserService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
+
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -34,7 +35,7 @@ public class UserService implements UserDetailsService {
     }
 
     public HogwartsUser save(HogwartsUser newHogwartsUser) {
-        //encode plaintext password before saving to the DB
+        // We NEED to encode plain text password before saving to the DB! TODO
         newHogwartsUser.setPassword(this.passwordEncoder.encode(newHogwartsUser.getPassword()));
         return this.userRepository.save(newHogwartsUser);
     }
@@ -63,8 +64,9 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.userRepository.findByUsername(username) //first, find user from DB
-                .map(hogwartsUser -> new MyUserPrincipal(hogwartsUser)) //if found, wrap the returned user instance in a MyUserPrincipal instance.
-                .orElseThrow(() -> new UsernameNotFoundException("username " + username + " is not found.")); //otherwise, throw an exception
+        return this.userRepository.findByUsername(username) // First, we need to find this user from database.
+                .map(hogwartsUser -> new MyUserPrincipal(hogwartsUser)) // If found, wrap the returned user instance in a MyUserPrincipal instance.
+                .orElseThrow(() -> new UsernameNotFoundException("username " + username + " is not found.")); // Otherwise, throw an exception.
     }
+
 }
