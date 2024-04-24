@@ -22,10 +22,12 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 import edu.tcu.cs.hogwartsartifactsonline.system.exception.ObjectNotFoundException;
+import org.springframework.test.context.ActiveProfiles;
 
 //this. for consistency
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles(value = "dev")
 class ArtifactServiceTest {
 
     @Mock
