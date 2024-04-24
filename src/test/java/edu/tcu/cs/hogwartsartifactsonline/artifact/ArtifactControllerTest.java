@@ -40,7 +40,7 @@ class ArtifactControllerTest {
     ArtifactService artifactService;
 
     @Autowired
-    ObjectMapper objectMapper; //springboot will inject this object into this test class and we can use it to serialize that ArtifactDto record
+    ObjectMapper objectMapper; //springboot will inject this object into this test class, and we can use it to serialize that ArtifactDto record
 
     List<Artifact> artifacts;
 

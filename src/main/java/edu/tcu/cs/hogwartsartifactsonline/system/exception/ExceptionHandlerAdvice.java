@@ -1,6 +1,6 @@
 package edu.tcu.cs.hogwartsartifactsonline.system.exception;
 
-import edu.tcu.cs.hogwartsartifactsonline.artifact.ArtifactNotFoundException;
+import edu.tcu.cs.hogwartsartifactsonline.system.Result;
 import edu.tcu.cs.hogwartsartifactsonline.system.StatusCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -14,8 +14,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import edu.tcu.cs.hogwartsartifactsonline.system.Result;
-
 
 import java.util.HashMap;
 import java.util.List;

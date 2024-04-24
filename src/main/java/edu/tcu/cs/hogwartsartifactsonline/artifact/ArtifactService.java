@@ -22,7 +22,7 @@ public class ArtifactService {
     }
 
     public Artifact findById(String artifactId) {
-        //return this.artifactRepository.findById(artifactId).get(); //get because we want artifact from optional (findById) though it doesn't handle exceptions so we use orElseThrow
+        //return this.artifactRepository.findById(artifactId).get(); //get because we want artifact from optional (findById) though it doesn't handle exceptions ,so we use orElseThrow
         return this.artifactRepository.findById(artifactId)
                 .orElseThrow(() -> new ObjectNotFoundException("artifact", artifactId));
     }
