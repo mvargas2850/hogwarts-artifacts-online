@@ -85,6 +85,7 @@
         <!--            <scope>runtime</scope>-->
         <!--        </dependency>-->
     </dependencies>
+<!--    The Spring Azure Bill of Materials (BOM)-->
     <dependencyManagement>
         <dependencies>
             <dependency>
