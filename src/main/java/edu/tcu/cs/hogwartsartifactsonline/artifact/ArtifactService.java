@@ -4,13 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.tcu.cs.hogwartsartifactsonline.artifact.dto.ArtifactDto;
 import edu.tcu.cs.hogwartsartifactsonline.artifact.utils.IdWorker;
-import edu.tcu.cs.hogwartsartifactsonline.client.ai.chat.ChatClient;
 import edu.tcu.cs.hogwartsartifactsonline.client.ai.chat.dto.ChatRequest;
 import edu.tcu.cs.hogwartsartifactsonline.client.ai.chat.dto.ChatResponse;
+import edu.tcu.cs.hogwartsartifactsonline.client.ai.chat.ChatClient;
 import edu.tcu.cs.hogwartsartifactsonline.client.ai.chat.dto.Message;
 import edu.tcu.cs.hogwartsartifactsonline.system.exception.ObjectNotFoundException;
-import io.micrometer.core.annotation.Timed;
-import io.micrometer.observation.annotation.Observed;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
+
 
 @Service
 @Transactional
