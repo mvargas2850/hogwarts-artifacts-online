@@ -1,3 +1,4 @@
+
 package edu.tcu.cs.hogwartsartifactsonline.artifact;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -6,14 +7,15 @@ import edu.tcu.cs.hogwartsartifactsonline.artifact.converter.ArtifactToArtifactD
 import edu.tcu.cs.hogwartsartifactsonline.artifact.dto.ArtifactDto;
 import edu.tcu.cs.hogwartsartifactsonline.system.Result;
 import edu.tcu.cs.hogwartsartifactsonline.system.StatusCode;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-
 
 @RestController
 @RequestMapping("${api.endpoint.base-url}/artifacts")
@@ -25,15 +27,20 @@ public class ArtifactController {
 
     private final ArtifactDtoToArtifactConverter artifactDtoToArtifactConverter;
 
-    public ArtifactController(ArtifactService artifactService, ArtifactToArtifactDtoConverter artifactToArtifactDtoConverter, ArtifactDtoToArtifactConverter artifactDtoToArtifactConverter) {
+    private final MeterRegistry meterRegistry;
+
+
+    public ArtifactController(ArtifactService artifactService, ArtifactToArtifactDtoConverter artifactToArtifactDtoConverter, ArtifactDtoToArtifactConverter artifactDtoToArtifactConverter, MeterRegistry meterRegistry) {
         this.artifactService = artifactService;
         this.artifactToArtifactDtoConverter = artifactToArtifactDtoConverter;
         this.artifactDtoToArtifactConverter = artifactDtoToArtifactConverter;
+        this.meterRegistry = meterRegistry;
     }
 
     @GetMapping("/{artifactId}")
-    public Result findArtifactById(@PathVariable String artifactId){
+    public Result findArtifactById(@PathVariable String artifactId) {
         Artifact foundArtifact = this.artifactService.findById(artifactId);
+        this.meterRegistry.counter("artifact.id." + artifactId).increment();
         ArtifactDto artifactDto = this.artifactToArtifactDtoConverter.convert(foundArtifact);
         return new Result(true, StatusCode.SUCCESS, "Find One Success", artifactDto);
     }
@@ -48,8 +55,8 @@ public class ArtifactController {
     }
 
     @PostMapping
-    public Result addArtifact(@Valid @RequestBody ArtifactDto artifactDto){
-        //convert artifactDto to artifact
+    public Result addArtifact(@Valid @RequestBody ArtifactDto artifactDto) {
+        // Convert artifactDto to artifact
         Artifact newArtifact = this.artifactDtoToArtifactConverter.convert(artifactDto);
         Artifact savedArtifact = this.artifactService.save(newArtifact);
         ArtifactDto savedArtifactDto = this.artifactToArtifactDtoConverter.convert(savedArtifact);
@@ -57,7 +64,7 @@ public class ArtifactController {
     }
 
     @PutMapping("/{artifactId}")
-    public Result updateArtifact(@PathVariable String artifactId, @Valid @RequestBody ArtifactDto artifactDto){
+    public Result updateArtifact(@PathVariable String artifactId, @Valid @RequestBody ArtifactDto artifactDto) {
         Artifact update = this.artifactDtoToArtifactConverter.convert(artifactDto);
         Artifact updatedArtifact = this.artifactService.update(artifactId, update);
         ArtifactDto updatedArtifactDto = this.artifactToArtifactDtoConverter.convert(updatedArtifact);
@@ -80,7 +87,5 @@ public class ArtifactController {
         String artifactSummary = this.artifactService.summarize(artifactDtos);
         return new Result(true, StatusCode.SUCCESS, "Summarize Success", artifactSummary);
     }
-
-
 
 }
