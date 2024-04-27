@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.tcu.cs.hogwartsartifactsonline.artifact.dto.ArtifactDto;
 import edu.tcu.cs.hogwartsartifactsonline.artifact.utils.IdWorker;
+import edu.tcu.cs.hogwartsartifactsonline.client.ai.chat.ChatClient;
 import edu.tcu.cs.hogwartsartifactsonline.client.ai.chat.dto.ChatRequest;
 import edu.tcu.cs.hogwartsartifactsonline.client.ai.chat.dto.ChatResponse;
-import edu.tcu.cs.hogwartsartifactsonline.client.ai.chat.ChatClient;
 import edu.tcu.cs.hogwartsartifactsonline.client.ai.chat.dto.Message;
 import edu.tcu.cs.hogwartsartifactsonline.system.exception.ObjectNotFoundException;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.observation.annotation.Observed;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +20,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
-
 
 @Service
 @Transactional
@@ -30,23 +31,25 @@ public class ArtifactService {
 
     private final ChatClient chatClient;
 
+
     public ArtifactService(ArtifactRepository artifactRepository, IdWorker idWorker, ChatClient chatClient) {
         this.artifactRepository = artifactRepository;
         this.idWorker = idWorker;
         this.chatClient = chatClient;
     }
 
+    @Observed(name = "artifact", contextualName = "findByIdService")
     public Artifact findById(String artifactId) {
-        //return this.artifactRepository.findById(artifactId).get(); //get because we want artifact from optional (findById) though it doesn't handle exceptions ,so we use orElseThrow
         return this.artifactRepository.findById(artifactId)
                 .orElseThrow(() -> new ObjectNotFoundException("artifact", artifactId));
     }
 
-    public List<Artifact> findAll(){
+    @Timed("findAllArtifactsService.time")
+    public List<Artifact> findAll() {
         return this.artifactRepository.findAll();
     }
 
-    public Artifact save(Artifact newArtifact){
+    public Artifact save(Artifact newArtifact) {
         newArtifact.setId(idWorker.nextId() + "");
         return this.artifactRepository.save(newArtifact);
     }
@@ -62,7 +65,7 @@ public class ArtifactService {
                 .orElseThrow(() -> new ObjectNotFoundException("artifact", artifactId));
     }
 
-    public void delete(String artifactId){
+    public void delete(String artifactId) {
         this.artifactRepository.findById(artifactId)
                 .orElseThrow(() -> new ObjectNotFoundException("artifact", artifactId));
         this.artifactRepository.deleteById(artifactId);
@@ -73,7 +76,7 @@ public class ArtifactService {
      *
      * @param artifactDtos a list of artifact dtos to be summarized
      * @return a summary of the existing artifacts
-     * @throwsJsonProcessingException
+     * @throws JsonProcessingException
      */
     public String summarize(List<ArtifactDto> artifactDtos) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
