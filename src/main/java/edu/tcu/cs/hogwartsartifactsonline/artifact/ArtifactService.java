@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
 import java.util.List;
 import java.util.Map;
 
@@ -99,6 +98,7 @@ public class ArtifactService {
     public Page<Artifact> findAll(Pageable pageable) {
         return this.artifactRepository.findAll(pageable);
     }
+
 
     public Page<Artifact> findByCriteria(Map<String, String> searchCriteria, Pageable pageable) {
         Specification<Artifact> spec = Specification.where(null);
